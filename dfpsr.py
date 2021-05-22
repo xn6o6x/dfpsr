@@ -16,6 +16,12 @@ import subprocess as sp
 #
 version='JigLu_20200925'
 #
+os.environ["OMP_NUM_THREADS"] = "20" # export OMP_NUM_THREADS=10
+os.environ["OPENBLAS_NUM_THREADS"] = "20" # export OPENBLAS_NUM_THREADS=10
+os.environ["MKL_NUM_THREADS"] = "20" # export MKL_NUM_THREADS=10
+os.environ["VECLIB_MAXIMUM_THREADS"] = "20" # export VECLIB_MAXIMUM_THREADS=10
+os.environ["NUMEXPR_NUM_THREADS"] = "20" # export NUMEXPR_NUM_THREADS=10
+#
 parser=ap.ArgumentParser(prog='dfpsr',description='Dedisperse and Fold the psrfits data.',epilog='Ver '+version)
 parser.add_argument('-v','--version', action='version', version=version)
 parser.add_argument('--verbose', action="store_true",default=False,help="print detailed information")
