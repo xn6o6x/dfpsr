@@ -7,8 +7,16 @@ import os,time,ld,sys
 import warnings as wn
 #
 version='JuiAnHsu_20210414'
+#
+os.environ["OMP_NUM_THREADS"] = "20" # export OMP_NUM_THREADS=10
+os.environ["OPENBLAS_NUM_THREADS"] = "20" # export OPENBLAS_NUM_THREADS=10
+os.environ["MKL_NUM_THREADS"] = "20" # export MKL_NUM_THREADS=10
+os.environ["VECLIB_MAXIMUM_THREADS"] = "20" # export VECLIB_MAXIMUM_THREADS=10
+os.environ["NUMEXPR_NUM_THREADS"] = "20" # export NUMEXPR_NUM_THREADS=10
+#
 parser=ap.ArgumentParser(prog='ldfdomain',description='Save the fdomain data in a 3D array.',epilog='Ver '+version)
 parser.add_argument('-v','--version',action='version',version=version)
+parser.add_argument('--verbose', action="store_true",default=False,help="print detailed information")
 parser.add_argument("filename",help="input ld file")
 parser.add_argument('-b','--phase_range',default=0,dest='phase',help='limit the phase range, PHASE0,PHASE1')
 parser.add_argument('-r','--frequency_range',default=0,dest='frequency',help='limit the frequency rangeFREQ0,FREQ1')
@@ -93,8 +101,8 @@ if args.subint:
 else:
 	subint_start=0
 	subint_end=nsub
-	subint=np.array([subint_start,subint_end])
 #
+start_time=time.time()
 data=d.period_scrunch(subint_start,subint_end,chan)[:,:,polar]
 if 'zchan' in info.keys():
     if len(chan):
@@ -104,13 +112,9 @@ if 'zchan' in info.keys():
     zaparray=np.zeros_like(data)
     zaparray[zchan]=True
     data=ma.masked_array(data,mask=zaparray)
-if args.n:
-    data-=np.polyval(np.polyfit(np.arange(nbin),data.T,args.n),np.array([range(nbin)]*len(data)).T).T
-else:
-    data-=data.mean(1).reshape(-1,1)
-if args.norm:
-    data/=data.max(1).reshape(-1,1)
 if args.rotation:
     data=shift(data,args.rotation)
-sys.stdout.write('Subint %s completed.\n'%subint_start)
+if args.verbose:
+    time_mark=time.strftime("%H:%M:%S", time.localtime())
+    sys.stdout.write("Extracting %s subint fdomain data takes %.3f seconds.  %s\n"%(subint_start,time.time()-start_time,time_mark))
 np.save('.'.join(args.filename.split('.')[:-1])+'_f_%s.npy'%subint_start,data.data[::-1])

@@ -5,7 +5,6 @@ import numpy.fft as fft
 import argparse as ap
 import os,time,ld,sys
 import warnings as wn
-
 #
 version='JuiAnHsu_20210408'
 #
@@ -50,7 +49,6 @@ freq_end=np.float64(info['freq_end'])
 freq=(freq_start+freq_end)/2.0
 bw=freq_end-freq_start
 channel_width=(freq_end-freq_start)/nchan
-
 #
 if args.frequency:
 	frequency=np.float64(args.frequency.split(','))
@@ -124,7 +122,7 @@ for start in range(subint_start,subint_end):
 		profile=np.append(profile,ii)
 	else:
 		data=data.sum(-1)
-	time_mark=time.strftime("%H:%M:%S", time.localtime())
 	if args.verbose:
+		time_mark=time.strftime("%H:%M:%S", time.localtime())
 		sys.stdout.write("Extracting %s profile takes %.3f seconds.  %s\n"%(ordinal(start),time.time()-start_time,time_mark))
 np.save('.'.join(args.filename.split('.')[:-1])+'_p.npy',profile)
