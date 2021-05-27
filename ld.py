@@ -211,7 +211,7 @@ class ld():
 		data=data.reshape([end_period-start_period,self.__size__[3],self.__size__[4]])
 		return data
 	#
-	def period_scrunch(self,start_period=0,end_period=0,select_chan=[]):
+	def period_ (self,start_period=0,end_period=0,select_chan=[]):
 		ndata_chan=np.int64(np.array(self.__size__[2:]).prod())
 		if len(select_chan)==0:
 			select_chan=np.arange(self.__size__[1])

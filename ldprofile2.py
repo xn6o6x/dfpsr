@@ -106,22 +106,17 @@ ordinal=lambda n: "%d%s"%(n,"tsnrhtdd"[(n//10%10!=1)*(n%10<4)*n%10::4])
 for start in range(subint_start,subint_end):
 	start_time=time.time()
 	data=d.chan_scrunch(chan,start,start+1).sum(0)
-	bins,mn=10,nbin/10
-	stat,val=np.histogram(data[:,0],bins)
-	while stat.max()>mn and 2*bins<mn:
-		bins*=2
-		stat,val=np.histogram(data[:,0],bins)
-	val=(val[1:]+val[:-1])/2.0
 	if args.rotation:
 		data=shift(data,args.rotation)
-	x=np.linspace(0,1,len(data))
 	if args.polar:
 		data=data[:,polar]
+        profile=np.append(profile,data)
 	elif npol==4:
 		ii,qq,uu,vv=data.T
 		profile=np.append(profile,ii)
 	else:
 		data=data.sum(-1)
+        profile=np.append(profile,data)
 	if args.verbose:
 		time_mark=time.strftime("%H:%M:%S", time.localtime())
 		sys.stdout.write("Extracting %s profile takes %.3f seconds.  %s\n"%(ordinal(start),time.time()-start_time,time_mark))
